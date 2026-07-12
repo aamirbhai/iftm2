@@ -4,95 +4,52 @@ import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getPageBySlug, getPageSlugs } from "@/lib/wordpress";
 
-// Static page data - replace with CMS later
-const pages: Record<string, {
-  title: string;
-  subtitle: string;
-  content: string;
-  sidebarLinks: { label: string; href: string }[];
-}> = {
-  about: {
-    title: "About IFTM University",
-    subtitle: "Committed to Academic Excellence since 2001",
-    content: `
-      <h2>Our Story</h2>
-      <p>IFTM University, Moradabad was established in 2001 with a vision to provide quality education and foster research culture in the region. Over the years, we have grown into a multidisciplinary university offering 130+ programmes across various streams.</p>
-      
-      <h2>Our Mission</h2>
-      <p>To impart quality education that combines theoretical knowledge with practical skills, preparing students to become responsible global citizens and leaders in their chosen fields.</p>
-      
-      <h2>Our Vision</h2>
-      <p>To be a center of excellence in higher education, recognized nationally and internationally for innovation, research, and holistic development of students.</p>
-      
-      <h2>Key Highlights</h2>
-      <ul>
-        <li>NAAC 'A' Grade Accredited University</li>
-        <li>UGC Recognized under Section 2(f) & 12(B)</li>
-        <li>AICTE, PCI, BCI Approved Programmes</li>
-        <li>69+ Acre Lush Green Campus</li>
-        <li>90%+ Placement Rate</li>
-        <li>130+ Programmes across 11 Schools</li>
-      </ul>
-    `,
-    sidebarLinks: [
-      { label: "Salient Features", href: "/salient-features" },
-      { label: "Approvals & Rankings", href: "/approvals" },
-      { label: "Administration", href: "/administration" },
-      { label: "University Governance", href: "/governance" },
-      { label: "Contact Us", href: "/contact" },
-    ],
-  },
-  contact: {
-    title: "Contact Us",
-    subtitle: "We'd love to hear from you",
-    content: `
-      <h2>Get in Touch</h2>
-      <p>Have questions about admissions, programmes, or campus life? Reach out to us through any of the channels below.</p>
-      
-      <h2>Address</h2>
-      <p>IFTM University<br>Lodhipur Rajput, Delhi Road<br>Moradabad, Uttar Pradesh - 244102<br>India</p>
-      
-      <h2>Phone</h2>
-      <p>Main Office: +91-9639004077<br>Toll Free: 1800-121-066666</p>
-      
-      <h2>Email</h2>
-      <p>General Enquiries: info@iftm.ac.in<br>Admissions: admissions@iftm.ac.in</p>
-      
-      <h2>Office Hours</h2>
-      <p>Monday to Saturday: 9:00 AM - 5:00 PM<br>Sunday: Closed</p>
-    `,
-    sidebarLinks: [
-      { label: "How to Reach", href: "/how-to-reach" },
-      { label: "Enquiry Form", href: "/enquire" },
-      { label: "Feedback", href: "/feedback" },
-    ],
-  },
+export const revalidate = 60;
+
+// Static sidebar links per page slug
+const sidebarLinks: Record<string, { label: string; href: string }[]> = {
+  about: [
+    { label: "Salient Features", href: "/salient-features" },
+    { label: "Approvals & Rankings", href: "/approvals" },
+    { label: "Administration", href: "/administration" },
+    { label: "University Governance", href: "/governance" },
+    { label: "Contact Us", href: "/contact" },
+  ],
+  contact: [
+    { label: "How to Reach", href: "/how-to-reach" },
+    { label: "Enquiry Form", href: "/enquire" },
+    { label: "Feedback", href: "/feedback" },
+  ],
 };
 
 type PageParams = { slug: string };
 
 export async function generateStaticParams() {
-  return Object.keys(pages).map((slug) => ({ slug }));
+  const slugs = await getPageSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<PageParams> }): Promise<Metadata> {
   const { slug } = await params;
-  const page = pages[slug];
+  const page = await getPageBySlug(slug);
   if (!page) return { title: "Page Not Found" };
 
   return {
     title: `${page.title} | IFTM University Moradabad`,
-    description: page.subtitle,
+    description: page.content?.replace(/<[^>]*>/g, "").substring(0, 160) ?? "",
     alternates: { canonical: `https://iftmuniversity.ac.in/${slug}` },
   };
 }
 
 export default async function GenericPage({ params }: { params: Promise<PageParams> }) {
   const { slug } = await params;
-  const page = pages[slug];
+  const page = await getPageBySlug(slug);
 
   if (!page) notFound();
+
+  const links = sidebarLinks[slug] ?? [];
 
   return (
     <>
@@ -100,7 +57,6 @@ export default async function GenericPage({ params }: { params: Promise<PagePara
       <main className="min-h-screen">
         <PageHero
           title={page.title}
-          subtitle={page.subtitle}
           breadcrumbs={[{ label: page.title, href: `/${slug}` }]}
         />
 
@@ -115,31 +71,35 @@ export default async function GenericPage({ params }: { params: Promise<PagePara
                   prose-p:text-iftm-text prose-p:leading-relaxed
                   prose-li:text-iftm-text
                   prose-a:text-iftm-primary prose-a:no-underline hover:prose-a:underline"
-                dangerouslySetInnerHTML={{ __html: page.content }}
+                dangerouslySetInnerHTML={{ __html: page.content ?? "" }}
               />
 
               {/* Sidebar */}
               <aside>
                 <div className="bg-iftm-light rounded-xl p-6 sticky top-24">
-                  <h3 className="text-iftm-dark font-bold text-lg mb-4 flex items-center gap-2">
-                    <span className="w-1 h-5 bg-iftm-primary rounded-full" />
-                    Quick Links
-                  </h3>
-                  <ul className="space-y-2">
-                    {page.sidebarLinks.map((link, index) => (
-                      <li key={index}>
-                        <Link
-                          href={link.href}
-                          className="flex items-center gap-2 py-2 px-3 text-iftm-text hover:text-iftm-primary hover:bg-white rounded-lg transition-all text-sm"
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-primary">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                          </svg>
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  {links.length > 0 && (
+                    <>
+                      <h3 className="text-iftm-dark font-bold text-lg mb-4 flex items-center gap-2">
+                        <span className="w-1 h-5 bg-iftm-primary rounded-full" />
+                        Quick Links
+                      </h3>
+                      <ul className="space-y-2">
+                        {links.map((link, index) => (
+                          <li key={index}>
+                            <Link
+                              href={link.href}
+                              className="flex items-center gap-2 py-2 px-3 text-iftm-text hover:text-iftm-primary hover:bg-white rounded-lg transition-all text-sm"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-primary">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                              </svg>
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
 
                   {/* Contact Card */}
                   <div className="mt-6 p-4 bg-iftm-primary/10 rounded-lg border border-iftm-primary/20">

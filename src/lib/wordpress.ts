@@ -85,6 +85,23 @@ export async function getPosts(first = 10, after?: string) {
   return data.posts;
 }
 
+const GET_POST_SLUGS = gql`
+  query GetPostSlugs($first: Int = 100) {
+    posts(first: $first) {
+      nodes {
+        slug
+      }
+    }
+  }
+`;
+
+export async function getPostSlugs(): Promise<string[]> {
+  const data = await client.request<{
+    posts: { nodes: { slug: string }[] };
+  }>(GET_POST_SLUGS);
+  return data.posts.nodes.map((n) => n.slug);
+}
+
 export async function getPostBySlug(slug: string) {
   const query = gql`
     ${IMAGE_FRAGMENT}
@@ -203,6 +220,20 @@ export async function getNewsBySlug(slug: string) {
   return data.newsItemBy;
 }
 
+export async function getNewsSlugs() {
+  const query = gql`
+    query GetNewsSlugs {
+      newsItems(first: 100) {
+        nodes {
+          slug
+        }
+      }
+    }
+  `;
+  const data = await client.request<{ newsItems: { nodes: { slug: string }[] } }>(query);
+  return data.newsItems.nodes.map((node) => node.slug);
+}
+
 // --- Programmes ---
 const GET_PROGRAMMES = gql`
   ${IMAGE_FRAGMENT}
@@ -239,6 +270,22 @@ export async function getProgrammes(first = 50) {
     programmes: { nodes: WordPressProgramme[] };
   }>(GET_PROGRAMMES, { first });
   return data.programmes.nodes;
+}
+
+export async function getProgrammeSlugs() {
+  const query = gql`
+    query GetProgrammeSlugs($first: Int = 50) {
+      programmes(first: $first) {
+        nodes {
+          slug
+        }
+      }
+    }
+  `;
+  const data = await client.request<{
+    programmes: { nodes: { slug: string }[] };
+  }>(query);
+  return data.programmes.nodes.map((n) => n.slug);
 }
 
 export async function getProgrammeBySlug(slug: string) {
@@ -294,4 +341,18 @@ export async function getPageBySlug(slug: string) {
   `;
   const data = await client.request<{ pageBy: WordPressPage | null }>(query, { slug });
   return data.pageBy;
+}
+
+export async function getPageSlugs() {
+  const query = gql`
+    query GetPageSlugs {
+      pages(first: 100) {
+        nodes {
+          slug
+        }
+      }
+    }
+  `;
+  const data = await client.request<{ pages: { nodes: { slug: string }[] } }>(query);
+  return data.pages.nodes.map((node) => node.slug);
 }
