@@ -58,7 +58,7 @@ export default async function NewsPage() {
                       <div className="flex items-center gap-3 text-iftm-text-light text-[11px] mb-2">
                         <span>{new Date(item.date).toLocaleDateString()}</span>
                         <span>•</span>
-                        <span>{item.acf?.department || "University"}</span>
+                        <span>University</span>
                       </div>
                       <h3 className="text-iftm-dark font-bold text-[15px] mb-2 group-hover:text-iftm-primary transition-colors line-clamp-2">
                         {item.title}

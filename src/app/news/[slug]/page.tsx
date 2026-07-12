@@ -41,7 +41,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<News
   if (!article) notFound();
 
   const imageUrl = article.featuredImage?.node?.sourceUrl || "/images/gallery/campus1.jpg";
-  const department = article.acf?.department || "University";
+  const department = "University";
   const formattedDate = new Date(article.date).toLocaleDateString();
 
   const jsonLd = {

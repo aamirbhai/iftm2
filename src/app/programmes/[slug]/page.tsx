@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<ProgrammePa
 
   return {
     title: `${programme.title} | IFTM University Programmes`,
-    description: programme.acf?.overview?.replace(/<[^>]*>/g, "").substring(0, 160) ?? `${programme.title} at IFTM University`,
+    description: programme.content?.replace(/<[^>]*>/g, "").substring(0, 160) ?? `${programme.title} at IFTM University`,
     alternates: { canonical: `https://iftmuniversity.ac.in/programmes/${slug}` },
   };
 }
@@ -37,11 +37,11 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
 
   if (!programme) notFound();
 
-  const level = programme.acf?.level ?? "UG";
-  const duration = programme.acf?.duration ?? "";
-  const fee = programme.acf?.fee ?? "";
-  const eligibility = programme.acf?.eligibility ?? "";
-  const school = programme.acf?.school ?? "";
+  const level = "UG";
+  const duration = "";
+  const fee = "";
+  const eligibility = "";
+  const school = "";
 
   return (
     <>
@@ -96,9 +96,9 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
               {/* Main Content */}
               <div>
                 <ProgrammeTabs
-                  overview={programme.acf?.overview}
-                  curriculum={programme.acf?.curriculum}
-                  career={programme.acf?.career}
+                  overview={programme.content}
+                  curriculum={programme.content}
+                  career={programme.content}
                 />
               </div>
 

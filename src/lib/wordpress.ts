@@ -75,10 +75,6 @@ const GET_POSTS = gql`
             }
           }
         }
-        acf {
-          readTime
-          authorName
-        }
       }
     }
   }
@@ -154,10 +150,6 @@ export async function getPostBySlug(slug: string) {
             }
           }
         }
-        acf {
-          readTime
-          authorName
-        }
       }
     }
   `;
@@ -186,10 +178,6 @@ const GET_NEWS = gql`
           node {
             ...ImageFields
           }
-        }
-        acf {
-          department
-          sourceUrl
         }
       }
     }
@@ -223,10 +211,6 @@ export async function getNewsBySlug(slug: string) {
           node {
             ...ImageFields
           }
-        }
-        acf {
-          department
-          sourceUrl
         }
       }
     }
@@ -265,16 +249,6 @@ const GET_PROGRAMMES = gql`
           node {
             ...ImageFields
           }
-        }
-        acf {
-          school
-          level
-          duration
-          eligibility
-          fee
-          overview
-          curriculum
-          career
         }
       }
     }
@@ -321,16 +295,6 @@ export async function getProgrammeBySlug(slug: string) {
           node {
             ...ImageFields
           }
-        }
-        acf {
-          school
-          level
-          duration
-          eligibility
-          fee
-          overview
-          curriculum
-          career
         }
       }
     }

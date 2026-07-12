@@ -61,7 +61,7 @@ export default async function BlogPostPage({
     post.featuredImage?.node?.sourceUrl || "/images/buildings/7.jpg";
   const category = post.categories?.nodes?.[0]?.name || "General";
   const authorName = post.author?.node?.name || "IFTM University";
-  const readTime = post.acf?.readTime || "";
+  const readTime = "";
   const formattedDate = new Date(post.date).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",

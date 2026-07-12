@@ -33,7 +33,7 @@ const schoolIcons: Record<string, string> = {
 function groupBySchool(programmes: WordPressProgramme[]) {
   const groups = new Map<string, WordPressProgramme[]>();
   for (const p of programmes) {
-    const school = p.acf?.school ?? "Other Programmes";
+    const school = "Other Programmes";
     const arr = groups.get(school) ?? [];
     arr.push(p);
     groups.set(school, arr);
@@ -86,14 +86,14 @@ export default async function ProgrammesPage() {
                           href={`/programmes/${programme.slug}`}
                           className="flex items-center gap-3 p-4 bg-white rounded-xl border border-iftm-border hover:border-iftm-primary/30 hover:shadow-md transition-all group"
                         >
-                          <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase text-white ${levelColors[programme.acf?.level ?? "UG"]}`}>
-                            {programme.acf?.level ?? "UG"}
+                          <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase text-white ${levelColors["UG"]}`}>
+                            UG
                           </span>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-iftm-dark text-sm font-semibold truncate group-hover:text-iftm-primary transition-colors">
                               {programme.title}
                             </h3>
-                            <p className="text-iftm-text-light text-xs">{programme.acf?.duration ?? ""}</p>
+                            <p className="text-iftm-text-light text-xs"></p>
                           </div>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-text-light group-hover:text-iftm-primary transition-colors flex-shrink-0">
                             <path d="M5 12h14M12 5l7 7-7 7" />
