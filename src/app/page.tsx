@@ -4,11 +4,9 @@ import ProgramsSection from "@/components/ProgramsSection";
 import FounderSection from "@/components/FounderSection";
 import LeadershipSection from "@/components/LeadershipSection";
 import RecruitersAwardsTestimonials from "@/components/RecruitersAwardsTestimonials";
-import WhyChooseSection from "@/components/WhyChooseSection";
 import NewsSection from "@/components/NewsSection";
-import PlacementsSection from "@/components/PlacementsSection";
 import CampusGallerySection from "@/components/CampusGallerySection";
-import EventsSection from "@/components/EventsSection";
+import BlogSection from "@/components/BlogSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -21,11 +19,9 @@ export default function Home() {
       <LeadershipSection />
       <ProgramsSection />
       <RecruitersAwardsTestimonials />
-      <WhyChooseSection />
       <NewsSection />
-      <PlacementsSection />
       <CampusGallerySection />
-      <EventsSection />
+      <BlogSection />
       <CTASection />
       <Footer />
     </main>
