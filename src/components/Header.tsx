@@ -197,11 +197,11 @@ export default function Header() {
                 <a href="mailto:info@iftm.ac.in" className="hover:text-iftm-gold transition-colors" title="Email"><i className="fas fa-envelope"></i></a>
                 <Link href="/search" className="hover:text-iftm-gold transition-colors" title="Search"><i className="fas fa-search"></i></Link>
                 <span className="text-white/40">|</span>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-facebook-f"></i></a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-twitter"></i></a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-instagram"></i></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-youtube"></i></a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-linkedin-in"></i></a>
+                <a href="https://www.facebook.com/iftmuniv" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com/IFTMUni" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/iftmuniversity/" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/channel/UCYAp-IfRk0ckvrvxFS9hKgQ" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/in/iftm-university-04006a245/" target="_blank" rel="noopener noreferrer" className="hover:text-iftm-gold transition-colors"><i className="fab fa-linkedin-in"></i></a>
               </div>
             </div>
             {/* Nav row - bottom portion */}

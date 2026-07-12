@@ -7,6 +7,7 @@ import RecruitersAwardsTestimonials from "@/components/RecruitersAwardsTestimoni
 import NewsSection from "@/components/NewsSection";
 import CampusGallerySection from "@/components/CampusGallerySection";
 import BlogSection from "@/components/BlogSection";
+import FAQSection from "@/components/FAQSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -22,6 +23,7 @@ export default function Home() {
       <NewsSection />
       <CampusGallerySection />
       <BlogSection />
+      <FAQSection />
       <CTASection />
       <Footer />
     </main>

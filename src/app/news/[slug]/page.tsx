@@ -3,112 +3,55 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getNewsBySlug, getNewsSlugs } from "@/lib/wordpress";
 
-const newsArticles: Record<string, {
-  title: string;
-  department: string;
-  date: string;
-  img: string;
-  content: string;
-  relatedNews: { title: string; slug: string; date: string }[];
-}> = {
-  "admissions-open-2026-27": {
-    title: "Admissions Open 2026-27 | Apply Now",
-    department: "Admissions Office",
-    date: "15 Mar 2026",
-    img: "/images/gallery/campus1.jpg",
-    content: `
-      <h2>Admissions Now Open for Academic Session 2026-27</h2>
-      <p>IFTM University, Moradabad is pleased to announce that admissions are now open for all undergraduate, postgraduate, diploma, and doctoral programmes for the academic session 2026-27.</p>
-      
-      <h2>Programmes Offered</h2>
-      <p>We offer 130+ programmes across 11 schools including:</p>
-      <ul>
-        <li>Engineering & Technology (B.Tech, M.Tech)</li>
-        <li>Pharmacy (B.Pharm, M.Pharm, D.Pharm)</li>
-        <li>Management (BBA, MBA, B.Com)</li>
-        <li>Computer Science (BCA, MCA, B.Sc CS)</li>
-        <li>Sciences (B.Sc, M.Sc)</li>
-        <li>Law (LLB, LLM, Integrated Law)</li>
-        <li>Education (B.Ed, M.Ed)</li>
-        <li>Agriculture (B.Sc Agriculture)</li>
-      </ul>
-      
-      <h2>Scholarships Available</h2>
-      <p>Merit-based and need-based scholarships are available for eligible students.</p>
-      
-      <h2>How to Apply</h2>
-      <p>Interested candidates can apply online through our admission portal or visit the campus for in-person counseling.</p>
-      
-      <h2>Contact</h2>
-      <p>Phone: +91-9639004077<br>Toll Free: 1800-121-066666<br>Email: admissions@iftm.ac.in</p>
-    `,
-    relatedNews: [
-      { title: "NAAC 'A' Grade Accreditation Achieved", slug: "naac-a-grade", date: "2024" },
-      { title: "Campus Infrastructure Upgraded", slug: "infrastructure-upgrade", date: "2025" },
-    ],
-  },
-  "naac-a-grade": {
-    title: "NAAC 'A' Grade Accreditation Achieved",
-    department: "University Administration",
-    date: "2024",
-    img: "/images/gallery/campus2.jpg",
-    content: `
-      <h2>A Historic Achievement</h2>
-      <p>IFTM University, Moradabad has been accredited with NAAC 'A' Grade by the National Assessment and Accreditation Council (NAAC), Bangalore.</p>
-      
-      <h2>About NAAC</h2>
-      <p>NAAC is an autonomous body established by the University Grants Commission (UGC) to assess and accredit institutions of higher education in India.</p>
-      
-      <h2>What This Means</h2>
-      <p>The NAAC 'A' Grade accreditation validates that IFTM University meets the highest standards of quality in higher education.</p>
-      
-      <h2>Our Commitment</h2>
-      <p>This achievement motivates us to continue our pursuit of excellence.</p>
-    `,
-    relatedNews: [
-      { title: "Admissions Open 2026-27", slug: "admissions-open-2026-27", date: "Mar 2026" },
-      { title: "MoU with Industry Partners", slug: "mou-industry-partners", date: "2025-26" },
-    ],
-  },
-};
+export const revalidate = 60;
 
 type NewsParams = { slug: string };
 
 export async function generateStaticParams() {
-  return Object.keys(newsArticles).map((slug) => ({ slug }));
+  const slugs = await getNewsSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<NewsParams> }): Promise<Metadata> {
   const { slug } = await params;
-  const article = newsArticles[slug];
+  const article = await getNewsBySlug(slug);
   if (!article) return { title: "News Article Not Found" };
+
+  const plainContent = article.content?.replace(/<[^>]*>/g, "") || "";
 
   return {
     title: `${article.title} | IFTM University News`,
-    description: article.content.substring(0, 160).replace(/<[^>]*>/g, ""),
+    description: plainContent.substring(0, 160),
     alternates: { canonical: `https://iftmuniversity.ac.in/news/${slug}` },
     openGraph: {
       title: article.title,
-      description: article.content.substring(0, 160).replace(/<[^>]*>/g, ""),
+      description: plainContent.substring(0, 160),
       type: "article",
       publishedTime: article.date,
-      images: [{ url: `https://iftmuniversity.ac.in${article.img}`, width: 1200, height: 630 }],
+      images: article.featuredImage?.node?.sourceUrl
+        ? [{ url: article.featuredImage.node.sourceUrl, width: 1200, height: 630 }]
+        : [],
     },
   };
 }
 
 export default async function NewsArticlePage({ params }: { params: Promise<NewsParams> }) {
   const { slug } = await params;
-  const article = newsArticles[slug];
+  const article = await getNewsBySlug(slug);
 
   if (!article) notFound();
+
+  const imageUrl = article.featuredImage?.node?.sourceUrl || "/images/gallery/campus1.jpg";
+  const department = article.acf?.department || "University";
+  const formattedDate = new Date(article.date).toLocaleDateString();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: article.title,
-    image: `https://iftmuniversity.ac.in${article.img}`,
+    image: article.featuredImage?.node?.sourceUrl || "",
     datePublished: article.date,
     publisher: { "@type": "Organization", name: "IFTM University" },
   };
@@ -120,7 +63,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<News
         {/* Hero */}
         <section className="relative pt-[90px] md:pt-[110px]">
           <div className="absolute inset-0">
-            <img src={article.img} alt={article.title} className="w-full h-full object-cover" />
+            <img src={imageUrl} alt={article.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
           </div>
           <div className="relative max-w-[1400px] mx-auto px-4 md:px-6 py-12 md:py-20">
@@ -141,9 +84,9 @@ export default async function NewsArticlePage({ params }: { params: Promise<News
               {article.title}
             </h1>
             <div className="flex items-center gap-4 text-white/80 text-sm">
-              <span>{article.department}</span>
+              <span>{department}</span>
               <span>•</span>
-              <span>{article.date}</span>
+              <span>{formattedDate}</span>
             </div>
           </div>
         </section>
@@ -195,26 +138,15 @@ export default async function NewsArticlePage({ params }: { params: Promise<News
                     </Link>
                   </div>
 
-                  {/* Related News */}
+                  {/* Related News placeholder */}
                   <div className="bg-iftm-light rounded-xl p-6">
                     <h3 className="text-iftm-dark font-bold text-lg mb-4 flex items-center gap-2">
                       <span className="w-1 h-5 bg-iftm-primary rounded-full" />
                       Related News
                     </h3>
-                    <div className="space-y-3">
-                      {article.relatedNews.map((related, index) => (
-                        <Link
-                          key={index}
-                          href={`/news/${related.slug}`}
-                          className="block p-3 bg-white rounded-lg border border-iftm-border hover:border-iftm-primary/30 transition-colors"
-                        >
-                          <span className="text-iftm-primary text-[10px] font-semibold">{related.date}</span>
-                          <h4 className="text-iftm-dark text-sm font-semibold line-clamp-2 hover:text-iftm-primary transition-colors">
-                            {related.title}
-                          </h4>
-                        </Link>
-                      ))}
-                    </div>
+                    <p className="text-iftm-text-light text-sm">
+                      Visit the <Link href="/news" className="text-iftm-primary hover:underline">News page</Link> for more articles.
+                    </p>
                   </div>
                 </div>
               </aside>
