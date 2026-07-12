@@ -1,3 +1,6 @@
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageHero from "@/components/PageHero";
@@ -5,8 +8,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getProgrammes } from "@/lib/wordpress";
 import type { WordPressProgramme } from "@/types/wordpress";
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Programmes Offered | IFTM University Moradabad",
