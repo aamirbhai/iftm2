@@ -70,12 +70,12 @@ const imageVariants = {
   center: {
     scale: 1,
     opacity: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
   exit: {
     scale: 1.1,
     opacity: 0,
-    transition: { duration: 0.4, ease: "easeIn" },
+    transition: { duration: 0.4, ease: "easeIn" as const },
   },
 };
 
@@ -84,12 +84,12 @@ const textVariants = {
   center: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.5, delay: 0.15, ease: "easeOut" },
+    transition: { duration: 0.5, delay: 0.15, ease: "easeOut" as const },
   },
   exit: {
     y: -20,
     opacity: 0,
-    transition: { duration: 0.3, ease: "easeIn" },
+    transition: { duration: 0.3, ease: "easeIn" as const },
   },
 };
 
