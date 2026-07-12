@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
+export const runtime = 'edge';
+
 const programmeData: Record<string, {
   name: string;
   school: string;
