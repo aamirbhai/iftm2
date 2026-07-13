@@ -19,8 +19,10 @@ export const metadata: Metadata = {
   description:
     "IFTM University Moradabad - NAAC A Grade accredited private university offering 130+ programmes including B.Pharm, B.Tech, MBA, BBA, BCA, LLB with 90%+ placement. Apply now for admission 2026-27.",
   keywords:
-    "IFTM University, Moradabad University, B.Pharm, B.Tech, MBA, Best private university UP, NAAC A Grade, IFTM Moradabad",
-  authors: [{ name: "IFTM University" }],
+    "IFTM University, Moradabad University, B.Pharm, B.Tech, MBA, Best private university UP, NAAC A Grade, IFTM Moradabad, University in UP, Private University India",
+  authors: [{ name: "IFTM University", url: "https://iftmuniversity.ac.in" }],
+  creator: "IFTM University",
+  publisher: "IFTM University",
   robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   alternates: {
     canonical: "https://iftmuniversity.ac.in",
@@ -48,6 +50,13 @@ export const metadata: Metadata = {
     description: "NAAC 'A' Grade university with 130+ programmes and 90%+ placement rate.",
     images: ["https://iftmuniversity.ac.in/images/og-image.jpg"],
     site: "@IFTMUni",
+  },
+  verification: {
+    // Add Google Search Console verification when available
+    // google: "your-google-verification-code",
+  },
+  other: {
+    "llms-txt": "https://iftmuniversity.ac.in/llms.txt",
   },
 };
 

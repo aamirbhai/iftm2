@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 
 const leaders = [
   {
@@ -39,85 +38,19 @@ const leaders = [
   },
 ];
 
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 300 : -300,
-    opacity: 0,
-    scale: 0.95,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
-    },
-  },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -300 : 300,
-    opacity: 0,
-    scale: 0.95,
-    transition: {
-      duration: 0.5,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
-    },
-  }),
-};
-
-const imageVariants = {
-  enter: { scale: 0.8, opacity: 0 },
-  center: {
-    scale: 1,
-    opacity: 1,
-    transition: { duration: 0.5, ease: "easeOut" as const },
-  },
-  exit: {
-    scale: 1.1,
-    opacity: 0,
-    transition: { duration: 0.4, ease: "easeIn" as const },
-  },
-};
-
-const textVariants = {
-  enter: { y: 20, opacity: 0 },
-  center: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.5, delay: 0.15, ease: "easeOut" as const },
-  },
-  exit: {
-    y: -20,
-    opacity: 0,
-    transition: { duration: 0.3, ease: "easeIn" as const },
-  },
-};
-
 export default function LeadershipSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const SLIDE_INTERVAL = 6000;
 
-  const goToSlide = useCallback(
-    (index: number) => {
-      setDirection(index > activeIndex ? 1 : -1);
-      setActiveIndex(index);
-      setProgress(0);
-    },
-    [activeIndex]
-  );
-
   const nextSlide = useCallback(() => {
-    setDirection(1);
     setActiveIndex((prev) => (prev + 1) % leaders.length);
     setProgress(0);
   }, []);
 
   const prevSlide = useCallback(() => {
-    setDirection(-1);
     setActiveIndex((prev) => (prev - 1 + leaders.length) % leaders.length);
     setProgress(0);
   }, []);
@@ -147,20 +80,14 @@ export default function LeadershipSection() {
     <section className="py-20 bg-iftm-light overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+        <div className="text-center mb-14 animate-fade-in">
           <span className="text-iftm-primary text-xs font-bold uppercase tracking-[2px] mb-2 block">
             University Leadership
           </span>
           <h2 className="text-2xl md:text-3xl font-bold text-iftm-dark">
             Message from Leadership
           </h2>
-        </motion.div>
+        </div>
 
         {/* Carousel Container */}
         <div
@@ -170,209 +97,116 @@ export default function LeadershipSection() {
         >
           {/* Progress Bar */}
           <div className="absolute -top-1 left-0 right-0 h-1 bg-iftm-border/30 rounded-full overflow-hidden z-10">
-            <motion.div
-              className="h-full bg-iftm-primary rounded-full"
+            <div
+              className="h-full bg-iftm-primary rounded-full transition-all duration-100"
               style={{ width: `${progress}%` }}
-              transition={{ duration: 0.05 }}
             />
           </div>
 
           {/* Main Card */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-iftm-border/50">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={activeIndex}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="grid grid-cols-1 md:grid-cols-3"
+            <div key={activeIndex} className="grid grid-cols-1 md:grid-cols-3 animate-slide-in">
+              {/* Left - Image */}
+              <div
+                className="p-8 flex flex-col items-center justify-center text-center relative overflow-hidden"
+                style={{ background: leaders[activeIndex].gradient }}
               >
-                {/* Left - Image */}
-                <div
-                  className="p-8 flex flex-col items-center justify-center text-center relative overflow-hidden"
-                  style={{ background: leaders[activeIndex].gradient }}
-                >
-                  {/* Background decorative circle */}
-                  <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 0.1 }}
-                    transition={{ duration: 0.8 }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white"
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border-2 border-white opacity-10" />
+
+                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl mb-4 relative z-10">
+                  <Image
+                    src={leaders[activeIndex].image}
+                    alt={leaders[activeIndex].name}
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
                   />
-
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={`img-${activeIndex}`}
-                      variants={imageVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      className="w-32 h-32 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl mb-4 relative z-10"
-                    >
-                      <Image
-                        src={leaders[activeIndex].image}
-                        alt={leaders[activeIndex].name}
-                        width={128}
-                        height={128}
-                        className="w-full h-full object-cover"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={`name-${activeIndex}`}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.4, delay: 0.2 }}
-                      className="relative z-10"
-                    >
-                      <h3 className="text-white font-bold text-lg mb-1">
-                        {leaders[activeIndex].name}
-                      </h3>
-                      <p className="text-white/70 text-xs uppercase tracking-wider font-medium">
-                        {leaders[activeIndex].role}
-                      </p>
-                      <p className="text-white/50 text-xs mt-1">
-                        IFTM University
-                      </p>
-                    </motion.div>
-                  </AnimatePresence>
                 </div>
 
-                {/* Right - Message */}
-                <div className="md:col-span-2 p-8 md:p-10 flex flex-col justify-center min-h-[300px]">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={`text-${activeIndex}`}
-                      variants={textVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                    >
-                      <h5 className="text-iftm-text-light text-xs uppercase tracking-wider mb-1">
-                        Message from
-                      </h5>
-                      <h4 className="text-iftm-dark font-bold text-xl mb-5">
-                        {leaders[activeIndex].role}
-                      </h4>
-
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="36"
-                        height="36"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="text-iftm-primary/10 mb-3"
-                      >
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                      </svg>
-
-                      <p className="text-iftm-text text-sm md:text-base leading-relaxed mb-6">
-                        {leaders[activeIndex].message}
-                      </p>
-
-                      <a
-                        href="#"
-                        className="inline-flex items-center gap-2 text-iftm-primary font-semibold text-sm hover:text-iftm-primary-dark transition-colors group"
-                      >
-                        Read More
-                        <motion.svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          className="group-hover:translate-x-1 transition-transform"
-                        >
-                          <path d="M5 12h14" />
-                          <path d="m12 5 7 7-7 7" />
-                        </motion.svg>
-                      </a>
-                    </motion.div>
-                  </AnimatePresence>
+                <div className="relative z-10">
+                  <h3 className="text-white font-bold text-lg mb-1">
+                    {leaders[activeIndex].name}
+                  </h3>
+                  <p className="text-white/70 text-xs uppercase tracking-wider font-medium">
+                    {leaders[activeIndex].role}
+                  </p>
+                  <p className="text-white/50 text-xs mt-1">IFTM University</p>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+              </div>
+
+              {/* Right - Message */}
+              <div className="md:col-span-2 p-8 md:p-10 flex flex-col justify-center min-h-[300px]">
+                <div>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-iftm-primary/20 mb-4">
+                    <path d="M10 8c-1.1 0-2 .9-2 2v4h4v-4H8c0-1.1.9-2 2-2V6c-2.2 0-4 1.8-4 4v8h8v-8c0-1.1-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2v4h4v-4h-4c0-1.1.9-2 2-2V6c-2.2 0-4 1.8-4 4v8h8v-8c0-1.1-.9-2-2-2z" fill="currentColor" />
+                  </svg>
+                  <p className="text-iftm-text leading-relaxed text-base md:text-lg">
+                    {leaders[activeIndex].message}
+                  </p>
+                  <div className="mt-6 pt-4 border-t border-iftm-border">
+                    <p className="text-iftm-dark font-semibold">{leaders[activeIndex].name}</p>
+                    <p className="text-iftm-primary text-sm">{leaders[activeIndex].role}, IFTM University</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Navigation Arrows */}
+          {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 w-11 h-11 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-iftm-primary hover:text-white hover:scale-110 transition-all z-20 border border-iftm-border group"
-            aria-label="Previous leader"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-iftm-dark hover:bg-iftm-primary hover:text-white transition-all z-20"
+            aria-label="Previous"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="group-hover:-translate-x-0.5 transition-transform"
-            >
-              <path d="m15 18-6-6 6-6" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 w-11 h-11 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-iftm-primary hover:text-white hover:scale-110 transition-all z-20 border border-iftm-border group"
-            aria-label="Next leader"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-iftm-dark hover:bg-iftm-primary hover:text-white transition-all z-20"
+            aria-label="Next"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="group-hover:translate-x-0.5 transition-transform"
-            >
-              <path d="m9 18 6-6-6-6" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
-        </div>
 
-        {/* Dots with Leader Names */}
-        <div className="flex justify-center gap-3 mt-8">
-          {leaders.map((leader, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
-                index === activeIndex
-                  ? "bg-iftm-primary text-white shadow-md"
-                  : "bg-white text-iftm-text-light hover:bg-iftm-primary/10 border border-iftm-border"
-              }`}
-              aria-label={`Go to ${leader.role}`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full overflow-hidden border-2 ${
-                  index === activeIndex ? "border-white/40" : "border-iftm-border"
+          {/* Dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {leaders.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setActiveIndex(index);
+                  setProgress(0);
+                }}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? "bg-iftm-primary w-8" : "bg-iftm-border w-2 hover:bg-iftm-primary/50"
                 }`}
-              >
-                <Image
-                  src={leader.image}
-                  alt={leader.name}
-                  width={24}
-                  height={24}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs font-medium hidden sm:inline">
-                {leader.role}
-              </span>
-            </button>
-          ))}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-in {
+          from { opacity: 0; transform: translateX(50px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+        .animate-slide-in {
+          animation: slide-in 0.5s ease-out;
+        }
+      `}</style>
     </section>
   );
 }

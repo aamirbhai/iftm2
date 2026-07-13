@@ -1,7 +1,36 @@
+# IFTM University - Robots.txt
+# https://iftmuniversity.ac.in
+
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /_next/
 Disallow: /erp
 
+# AI Crawlers - Allow for GEO optimization
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# Sitemaps
 Sitemap: https://iftmuniversity.ac.in/sitemap.xml

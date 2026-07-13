@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 
 /* ─── Slide Data ─── */
 const slides = [
@@ -141,15 +140,10 @@ export default function HeroSlider() {
         {/* Slide Content - Centered */}
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="max-w-[1400px] mx-auto px-4 md:px-6 w-full text-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={current}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="max-w-[800px] mx-auto"
-              >
+            <div
+              key={current}
+              className="max-w-[800px] mx-auto animate-fade-in"
+            >
                 {/* Skewed badge */}
                 <div className="inline-block mb-4">
                   <div
@@ -190,8 +184,7 @@ export default function HeroSlider() {
                     {slides[current].cta2.label}
                   </Link>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+            </div>
 
             {/* Slide Indicators - Centered */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
@@ -290,33 +283,27 @@ export default function HeroSlider() {
         <div className="max-w-[1400px] mx-auto px-4 md:px-6">
           {/* Slider Container */}
           <div className="relative overflow-hidden rounded-2xl shadow-xl">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={bannerCurrent}
-                initial={{ opacity: 0, x: 60 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -60 }}
-                transition={{ duration: 0.5 }}
-                className={`bg-gradient-to-r ${bannerSlides[bannerCurrent].color} px-8 md:px-16 py-12 md:py-16`}
-              >
-                <div className="max-w-[600px]">
-                  <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
-                    {bannerSlides[bannerCurrent].title}
-                  </h2>
-                  <p className="text-white/80 text-sm md:text-base mb-6">
-                    {bannerSlides[bannerCurrent].subtitle}
-                  </p>
-                  <a
-                    href="https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-6 py-2.5 bg-white text-iftm-dark font-semibold text-sm uppercase tracking-wider rounded-md hover:bg-iftm-gold hover:text-iftm-dark transition-all"
-                  >
-                    Learn More
-                  </a>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+            <div
+              key={bannerCurrent}
+              className={`bg-gradient-to-r ${bannerSlides[bannerCurrent].color} px-8 md:px-16 py-12 md:py-16 animate-fade-in`}
+            >
+              <div className="max-w-[600px]">
+                <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
+                  {bannerSlides[bannerCurrent].title}
+                </h2>
+                <p className="text-white/80 text-sm md:text-base mb-6">
+                  {bannerSlides[bannerCurrent].subtitle}
+                </p>
+                <a
+                  href="https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 py-2.5 bg-white text-iftm-dark font-semibold text-sm uppercase tracking-wider rounded-md hover:bg-iftm-gold hover:text-iftm-dark transition-all"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
 
             {/* Dots */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -357,12 +344,13 @@ export default function HeroSlider() {
         </div>
       </section>
 
-      {/* Gradient animation keyframe */}
-      <style jsx global>{`
-        @keyframes gradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
         }
       `}</style>
     </>
