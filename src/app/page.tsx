@@ -11,6 +11,7 @@ import BlogSection from "@/components/BlogSection";
 import FAQSection from "@/components/FAQSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import StickySidebar from "@/components/StickySidebar";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <FAQSection />
       <CTASection />
       <Footer />
+      <StickySidebar />
     </main>
   );
 }

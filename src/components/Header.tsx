@@ -284,16 +284,6 @@ export default function Header({ solid = false }: { solid?: boolean }) {
                   <path d="m21 21-4.3-4.3" />
                 </svg>
               </Link>
-
-              {/* Apply Now Button */}
-              <a
-                href="https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-4 px-5 py-2.5 bg-iftm-primary text-white text-[12px] font-semibold uppercase tracking-wider rounded-md hover:bg-iftm-primary-dark transition-colors"
-              >
-                Apply Now
-              </a>
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -431,16 +421,6 @@ export default function Header({ solid = false }: { solid?: boolean }) {
                     );
                   })}
               </div>
-
-              {/* Apply Now Button */}
-              <a
-                href="https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block mt-4 px-5 py-3 bg-iftm-primary text-white text-center text-[13px] font-semibold uppercase rounded-md hover:bg-iftm-primary-dark transition-colors"
-              >
-                Apply Now
-              </a>
             </div>
           </div>
         )}
