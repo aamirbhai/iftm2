@@ -68,7 +68,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
       <Header />
       <main className="min-h-screen">
         {/* ═══ Attractive Hero Section ═══ */}
-        <section className="relative pt-[90px] md:pt-[110px] overflow-hidden">
+        <section className="relative pt-[72px] md:pt-[80px] overflow-hidden">
           {/* Background Gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-iftm-navy via-[#0a0f2e] to-[#151b4a]" />
           
