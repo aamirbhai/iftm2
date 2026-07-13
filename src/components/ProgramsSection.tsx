@@ -35,7 +35,7 @@ export default async function ProgramsSection() {
     level: "UG" as "Diploma" | "UG" | "PG" | "Ph.D.",
     duration: p.programmeDetails?.duration || "",
     fee: p.programmeDetails?.fee || "",
-    image: p.featuredImage?.sourceUrl,
+    image: p.featuredImage?.node?.sourceUrl,
   }));
 
   return <ProgramsSectionClient programmes={transformedProgrammes} />;

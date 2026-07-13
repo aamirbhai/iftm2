@@ -83,7 +83,7 @@ export default async function ProgrammesPage() {
                       {school.programmes.map((programme) => {
                         const pLevel = programme.programmeDetails?.level?.[0] || "UG";
                         const pDuration = programme.programmeDetails?.duration || "";
-                        const pImage = programme.featuredImage?.sourceUrl;
+                        const pImage = programme.featuredImage?.node?.sourceUrl;
                         return (
                           <Link
                             key={programme.slug}

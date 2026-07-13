@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<ProgrammePa
       title: `${programme.title} | IFTM University`,
       description,
       type: "website",
-      images: programme.featuredImage?.sourceUrl ? [{ url: programme.featuredImage.sourceUrl, width: 1200, height: 630 }] : [],
+      images: programme.featuredImage?.node?.sourceUrl ? [{ url: programme.featuredImage.node.sourceUrl, width: 1200, height: 630 }] : [],
     },
   };
 }
@@ -45,7 +45,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
   const duration = details?.duration || "";
   const fee = details?.fee || "";
   const level = details?.level?.[0] || "UG";
-  const bannerImage = programme.featuredImage?.sourceUrl || "/images/buildings/7.jpg";
+  const bannerImage = programme.featuredImage?.node?.sourceUrl || "/images/buildings/7.jpg";
   const plainContent = programme.content?.replace(/<[^>]*>/g, "") || "";
 
   return (
@@ -337,7 +337,7 @@ async function RelatedProgrammes({ currentSlug }: { currentSlug: string }) {
             >
               <div className="relative h-[180px] overflow-hidden">
                 <img
-                  src={p.featuredImage?.sourceUrl || "/images/buildings/7.jpg"}
+                  src={p.featuredImage?.node?.sourceUrl || "/images/buildings/7.jpg"}
                   alt={p.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"

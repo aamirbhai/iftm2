@@ -70,7 +70,7 @@ export interface WordPressProgramme {
   slug: string;
   content: string;
   modified: string;
-  featuredImage?: WordPressImage;
+  featuredImage?: { node: WordPressImage };
   programmeDetails?: {
     school?: string;
     level?: string[];
