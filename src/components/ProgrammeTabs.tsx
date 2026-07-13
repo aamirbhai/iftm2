@@ -13,12 +13,9 @@ interface Props {
 
 export default function ProgrammeTabs({ tabs }: Props) {
   const [activeTab, setActiveTab] = useState(tabs[0]?.id || "");
-  const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 400);
-
       for (const tab of tabs) {
         const el = document.getElementById(tab.id);
         if (el) {
@@ -45,30 +42,20 @@ export default function ProgrammeTabs({ tabs }: Props) {
   };
 
   return (
-    <div
-      className={`transition-all duration-300 ${
-        isSticky
-          ? "fixed top-[72px] left-0 right-0 z-40 bg-iftm-navy/95 backdrop-blur-md shadow-lg"
-          : "relative"
-      }`}
-    >
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6">
-        <nav className="flex gap-1 overflow-x-auto scrollbar-hide py-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => scrollToSection(tab.id)}
-              className={`px-5 py-3 text-sm font-semibold whitespace-nowrap transition-all border-b-2 ${
-                activeTab === tab.id
-                  ? "text-iftm-gold border-iftm-gold"
-                  : "text-white/60 border-transparent hover:text-white hover:border-white/30"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
-    </div>
+    <nav className="flex gap-1 overflow-x-auto scrollbar-hide py-1">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => scrollToSection(tab.id)}
+          className={`px-5 py-3 text-sm font-semibold whitespace-nowrap transition-all border-b-2 ${
+            activeTab === tab.id
+              ? "text-iftm-gold border-iftm-gold"
+              : "text-white/60 border-transparent hover:text-white hover:border-white/30"
+          }`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </nav>
   );
 }
