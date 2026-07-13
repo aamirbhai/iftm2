@@ -178,6 +178,9 @@ export default async function NewsArticlePage({ params }: { params: Promise<News
                 </svg>
                 NAAC 'A' Grade University
               </span>
+              <Link href="/editorial" className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full hover:bg-blue-100 transition-colors">
+                Editorial Policy
+              </Link>
             </div>
           </div>
 
