@@ -6,7 +6,7 @@ import type {
   WordPressPage,
 } from '@/types/wordpress';
 
-const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL || process.env.CLOUDFLARE_ENV?.WORDPRESS_API_URL;
+const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL;
 
 const client = WORDPRESS_API_URL
   ? new GraphQLClient(WORDPRESS_API_URL)
