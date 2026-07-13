@@ -5,38 +5,28 @@ import Link from "next/link";
 export default function StickySidebar() {
   return (
     <>
-      {/* ─── Left Sidebar: 360° View + WhatsApp ─── */}
-      <nav className="fixed left-0 top-1/2 -translate-y-1/2 z-[999] hidden md:flex flex-col gap-0">
-        {/* 360° View */}
+      {/* ─── Left Sidebar: 360° + WhatsApp (Circles) ─── */}
+      <div className="fixed left-4 bottom-28 z-[999] flex flex-col items-center gap-3">
+        {/* 360° View - Circle */}
         <Link
           href="/360-view"
-          className="group flex items-center gap-0 bg-iftm-navy/90 backdrop-blur-sm hover:bg-iftm-primary transition-colors duration-300"
+          className="w-14 h-14 rounded-full bg-iftm-navy/90 backdrop-blur-sm flex items-center justify-center text-white shadow-lg shadow-iftm-navy/30 hover:bg-iftm-primary hover:scale-110 transition-all duration-300 border border-white/10"
+          title="360° Campus View"
         >
-          <div className="flex flex-col items-center justify-center w-[60px] h-[60px] text-white">
-            <span className="text-lg font-extrabold leading-none">360°</span>
-            <span className="text-[8px] uppercase tracking-wider mt-0.5">View</span>
-          </div>
-          <div className="w-0 group-hover:w-[100px] overflow-hidden transition-all duration-300">
-            <span className="text-white text-xs font-medium whitespace-nowrap pr-3">Campus Tour</span>
-          </div>
+          <span className="text-sm font-extrabold leading-none">360°</span>
         </Link>
 
-        {/* WhatsApp */}
+        {/* WhatsApp - Circle */}
         <a
           href="https://api.whatsapp.com/send/?phone=919639004077&text=Hello%20IFTM%2C%20I%20am%20seeking%20admission-related%20information.&type=phone_number&app_absent=0"
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center gap-0 bg-green-600/90 backdrop-blur-sm hover:bg-green-700 transition-colors duration-300"
+          className="w-14 h-14 rounded-full bg-green-600/90 backdrop-blur-sm flex items-center justify-center text-white shadow-lg shadow-green-600/30 hover:bg-green-700 hover:scale-110 transition-all duration-300 border border-white/10"
+          title="WhatsApp Chat"
         >
-          <div className="flex flex-col items-center justify-center w-[60px] h-[60px] text-white">
-            <i className="fab fa-whatsapp text-xl" />
-            <span className="text-[8px] uppercase tracking-wider mt-0.5">Chat</span>
-          </div>
-          <div className="w-0 group-hover:w-[100px] overflow-hidden transition-all duration-300">
-            <span className="text-white text-xs font-medium whitespace-nowrap pr-3">WhatsApp</span>
-          </div>
+          <i className="fab fa-whatsapp text-2xl" />
         </a>
-      </nav>
+      </div>
 
       {/* ─── Right Sidebar: Admissions Open (TMU-style vertical) ─── */}
       <div className="fixed right-0 top-1/2 -translate-y-1/2 z-[999] hidden md:block">
