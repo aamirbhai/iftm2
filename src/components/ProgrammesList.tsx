@@ -105,6 +105,10 @@ export default function ProgrammesList({ schools }: Props) {
                     alt={programme.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><i class="fas fa-graduation-cap text-iftm-primary/30 text-2xl"></i></div>';
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
