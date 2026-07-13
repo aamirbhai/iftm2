@@ -252,7 +252,7 @@ export default function HeroSlider() {
       {/* ═══════════════════════════════════════════
           SECTION 1: HERO with HLS Video BG
           ═══════════════════════════════════════════ */}
-      <section className="relative h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden bg-iftm-dark">
+      <section className="relative h-[100dvh] md:h-[700px] lg:h-[800px] overflow-hidden bg-iftm-dark">
         {/* Video Background - Lazy Loaded */}
         <LazyHeroVideo />
 
