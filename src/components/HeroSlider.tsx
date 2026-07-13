@@ -3,42 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-/* ─── Slide Data ─── */
-const slides = [
-  {
-    title: "Best Education",
-    highlight: "in Moradabad",
-    description:
-      "NAAC A Grade accredited university with 90%+ placement record. 54+ programs in Pharmacy, Engineering, Management, Law & more.",
-    cta: { label: "Apply Now", href: "https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php" },
-    cta2: { label: "About IFTM", href: "/about" },
-  },
-  {
-    title: "Excellence in",
-    highlight: "Research & Innovation",
-    description:
-      "State-of-the-art laboratories, experienced faculty, and industry collaborations for cutting-edge research.",
-    cta: { label: "Apply Now", href: "https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php" },
-    cta2: { label: "Explore Programmes", href: "/programmes" },
-  },
-  {
-    title: "Global Placements",
-    highlight: "Top Recruiters",
-    description:
-      "Our students placed in Google, Microsoft, Amazon, TCS, Infosys, and 500+ leading companies worldwide.",
-    cta: { label: "View Placements", href: "/placements" },
-    cta2: { label: "Apply Now", href: "https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php" },
-  },
-  {
-    title: "Campus Life",
-    highlight: "Beyond Classroom",
-    description:
-      "World-class infrastructure, sports facilities, hostels, and vibrant student community for holistic development.",
-    cta: { label: "Explore Campus", href: "/campus-life" },
-    cta2: { label: "Apply Now", href: "https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php" },
-  },
-];
-
 /* ─── Stats Data (TMU style) ─── */
 const stats = [
   { icon: "fa-user-graduate", value: 10000, suffix: "+", label: "Students" },
@@ -228,16 +192,7 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 
 /* ─── Main Component ─── */
 export default function HeroSlider() {
-  const [current, setCurrent] = useState(0);
   const [bannerCurrent, setBannerCurrent] = useState(0);
-
-  /* Auto-rotate hero slides */
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
 
   /* Auto-rotate banner slider */
   useEffect(() => {
@@ -260,15 +215,12 @@ export default function HeroSlider() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
         <div className="absolute inset-0 bg-gradient-to-r from-iftm-navy/40 to-transparent" />
 
-        {/* Slide Content - Centered */}
+        {/* Hero Content - Centered */}
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="max-w-[1400px] mx-auto px-4 md:px-6 w-full text-center">
-            <div
-              key={current}
-              className="max-w-[800px] mx-auto animate-fade-in"
-            >
+            <div className="max-w-[900px] mx-auto animate-fade-in">
                 {/* Skewed badge */}
-                <div className="inline-block mb-4">
+                <div className="inline-block mb-5">
                   <div
                     className="bg-iftm-primary px-6 py-1.5 inline-block"
                     style={{ transform: "skewX(-12deg)" }}
@@ -277,75 +229,40 @@ export default function HeroSlider() {
                       className="text-white font-bold text-sm uppercase tracking-widest"
                       style={{ transform: "skewX(12deg)", display: "inline-block" }}
                     >
-                      IFTM University
+                      NAAC &apos;A&apos; Grade University
                     </span>
                   </div>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-5">
-                  {slides[current].title}{" "}
-                  <span className="text-iftm-gold block">
-                    {slides[current].highlight}
-                  </span>
+                <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold text-white leading-[1.1] mb-4">
+                  IFTM{" "}
+                  <span className="text-iftm-gold">University</span>
                 </h1>
-                <p className="text-white/80 text-base md:text-lg mb-8 max-w-[600px] mx-auto">
-                  {slides[current].description}
+                <p className="text-white/85 text-lg md:text-xl lg:text-2xl mb-3 max-w-[700px] mx-auto font-medium leading-relaxed">
+                  Transforming Minds, Empowering Futures
+                </p>
+                <p className="text-white/60 text-base md:text-lg mb-10 max-w-[600px] mx-auto">
+                  Moradabad&apos;s Premier Institution for Pharmacy, Engineering, Management, Law &amp; Medical Education
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <a
-                    href={slides[current].cta.href}
+                    href="https://uni.edulip.com/UI/Website/IFTM/StudentRegistration.php"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-3.5 bg-iftm-primary text-white font-semibold text-sm uppercase tracking-wider rounded-lg hover:bg-iftm-primary-dark transition-all hover:-translate-y-0.5 shadow-lg shadow-iftm-primary/30"
+                    className="px-8 py-4 bg-iftm-primary text-white font-semibold text-sm uppercase tracking-wider rounded-lg hover:bg-iftm-primary-dark transition-all hover:-translate-y-0.5 shadow-lg shadow-iftm-primary/30"
                   >
-                    {slides[current].cta.label}
+                    Apply Now
                   </a>
                   <Link
-                    href={slides[current].cta2.href}
-                    className="px-8 py-3.5 bg-white/10 backdrop-blur-sm text-white border-2 border-white/50 font-semibold text-sm uppercase tracking-wider rounded-lg hover:bg-white hover:text-iftm-dark transition-all"
+                    href="/programmes"
+                    className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/50 font-semibold text-sm uppercase tracking-wider rounded-lg hover:bg-white hover:text-iftm-dark transition-all"
                   >
-                    {slides[current].cta2.label}
+                    Explore Programmes
                   </Link>
                 </div>
             </div>
-
-            {/* Slide Indicators - Centered */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrent(index)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    index === current
-                      ? "bg-iftm-gold w-10"
-                      : "bg-white/40 w-4 hover:bg-white/60"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
           </div>
         </div>
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={() => setCurrent((prev) => (prev - 1 + slides.length) % slides.length)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all"
-          aria-label="Previous slide"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
-        <button
-          onClick={() => setCurrent((prev) => (prev + 1) % slides.length)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all"
-          aria-label="Next slide"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </button>
       </section>
 
       {/* ═══════════════════════════════════════════
