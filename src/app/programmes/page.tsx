@@ -53,7 +53,6 @@ function groupBySchool(programmes: WordPressProgramme[]) {
       slug: p.slug,
       level: p.programmeDetails?.level?.[0] || p.programmeFields?.level || guessLevel(p.title),
       duration: p.programmeDetails?.duration || "",
-      image: p.featuredImage?.node?.sourceUrl,
     })),
   }));
 }

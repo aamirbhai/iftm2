@@ -9,7 +9,6 @@ interface Programme {
   slug: string;
   level: string;
   duration: string;
-  image?: string;
 }
 
 interface School {
@@ -76,7 +75,7 @@ export default function ProgrammesList({ schools }: Props) {
         </div>
       </div>
 
-      {/* Content - Programmes */}
+      {/* Content - Programmes List */}
       <div>
         {/* School Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -89,58 +88,39 @@ export default function ProgrammesList({ schools }: Props) {
           </div>
         </div>
 
-        {/* Programmes Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Programmes List - Clean, no images */}
+        <div className="space-y-2">
           {current.programmes.map((programme) => (
             <Link
               key={programme.slug}
               href={`/programmes/${programme.slug}`}
-              className="group flex gap-4 bg-white rounded-xl border border-iftm-border p-4 hover:shadow-lg hover:border-iftm-primary/30 transition-all duration-300"
+              className="group flex items-center gap-4 bg-white rounded-xl border border-iftm-border px-5 py-4 hover:shadow-md hover:border-iftm-primary/30 transition-all duration-300"
             >
-              {/* Image */}
-              <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-iftm-light">
-                {programme.image ? (
-                  <img
-                    src={programme.image}
-                    alt={programme.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><i class="fas fa-graduation-cap text-iftm-primary/30 text-2xl"></i></div>';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <i className="fas fa-graduation-cap text-iftm-primary/30 text-2xl" />
-                  </div>
-                )}
-              </div>
+              {/* Level Badge */}
+              <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase text-white flex-shrink-0 ${levelColors[programme.level] || levelColors["UG"]}`}>
+                {programme.level}
+              </span>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase text-white mb-2 ${levelColors[programme.level] || levelColors["UG"]}`}>
-                  {programme.level}
-                </span>
-                <h3 className="text-iftm-dark font-semibold text-sm group-hover:text-iftm-primary transition-colors line-clamp-2 mb-1">
-                  {programme.title}
-                </h3>
-                {programme.duration && (
-                  <p className="text-iftm-text-light text-xs flex items-center gap-1">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-primary">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    {programme.duration}
-                  </p>
-                )}
-                <div className="flex items-center gap-1 text-iftm-primary text-xs font-semibold mt-2 group-hover:gap-2 transition-all">
-                  View Details
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+              {/* Programme Name */}
+              <h3 className="flex-1 text-iftm-dark font-semibold text-sm group-hover:text-iftm-primary transition-colors">
+                {programme.title}
+              </h3>
+
+              {/* Duration */}
+              {programme.duration && (
+                <span className="text-iftm-text-light text-xs flex items-center gap-1 flex-shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-primary">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
                   </svg>
-                </div>
-              </div>
+                  {programme.duration}
+                </span>
+              )}
+
+              {/* Arrow */}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-iftm-text-light group-hover:text-iftm-primary group-hover:translate-x-1 transition-all flex-shrink-0">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </Link>
           ))}
         </div>
