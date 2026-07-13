@@ -41,10 +41,15 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
   if (!programme) notFound();
 
   const details = programme.programmeDetails;
+  const fields = programme.programmeFields;
   const school = details?.school || "IFTM University";
   const duration = details?.duration || "";
-  const fee = details?.fee || "";
-  const level = details?.level?.[0] || "UG";
+  const fee = details?.fee || fields?.fee || "";
+  const level = details?.level?.[0] || fields?.level || "UG";
+  const eligibility = fields?.eligibility || "";
+  const overview = fields?.overview || "";
+  const curriculum = fields?.curriculum || "";
+  const careerProspects = fields?.careerProspects || "";
   const bannerImage = programme.featuredImage?.node?.sourceUrl || "/images/buildings/7.jpg";
   const plainContent = programme.content?.replace(/<[^>]*>/g, "") || "";
 
@@ -140,6 +145,73 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                   />
                 )}
 
+                {/* Overview from Meta Box */}
+                {overview && (
+                  <div className="mb-10">
+                    <h3 className="text-xl font-bold text-iftm-dark mb-4 flex items-center gap-2">
+                      <span className="w-1 h-5 bg-iftm-primary rounded-full" />
+                      Programme Overview
+                    </h3>
+                    <article
+                      className="prose prose-lg max-w-none
+                        prose-headings:text-iftm-dark prose-headings:font-bold
+                        prose-p:text-iftm-text prose-p:leading-relaxed
+                        prose-li:text-iftm-text
+                        prose-a:text-iftm-primary"
+                      dangerouslySetInnerHTML={{ __html: overview }}
+                    />
+                  </div>
+                )}
+
+                {/* Eligibility from Meta Box */}
+                {eligibility && (
+                  <div className="bg-iftm-light rounded-2xl p-6 md:p-8 mb-10">
+                    <h3 className="text-xl font-bold text-iftm-dark mb-4 flex items-center gap-2">
+                      <span className="w-1 h-5 bg-iftm-primary rounded-full" />
+                      Eligibility
+                    </h3>
+                    <div className="bg-white rounded-xl p-4 border border-iftm-border">
+                      <p className="text-iftm-text">{eligibility}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Curriculum from Meta Box */}
+                {curriculum && (
+                  <div className="mb-10">
+                    <h3 className="text-xl font-bold text-iftm-dark mb-4 flex items-center gap-2">
+                      <span className="w-1 h-5 bg-iftm-primary rounded-full" />
+                      Curriculum
+                    </h3>
+                    <article
+                      className="prose prose-lg max-w-none
+                        prose-headings:text-iftm-dark prose-headings:font-bold
+                        prose-p:text-iftm-text prose-p:leading-relaxed
+                        prose-li:text-iftm-text
+                        prose-a:text-iftm-primary"
+                      dangerouslySetInnerHTML={{ __html: curriculum }}
+                    />
+                  </div>
+                )}
+
+                {/* Career Prospects from Meta Box */}
+                {careerProspects && (
+                  <div className="mb-10">
+                    <h3 className="text-xl font-bold text-iftm-dark mb-4 flex items-center gap-2">
+                      <span className="w-1 h-5 bg-iftm-primary rounded-full" />
+                      Career Prospects
+                    </h3>
+                    <article
+                      className="prose prose-lg max-w-none
+                        prose-headings:text-iftm-dark prose-headings:font-bold
+                        prose-p:text-iftm-text prose-p:leading-relaxed
+                        prose-li:text-iftm-text
+                        prose-a:text-iftm-primary"
+                      dangerouslySetInnerHTML={{ __html: careerProspects }}
+                    />
+                  </div>
+                )}
+
                 {/* Programme Highlights */}
                 <div className="bg-iftm-light rounded-2xl p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-bold text-iftm-dark mb-6">Programme Highlights</h3>
@@ -151,6 +223,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                       { icon: "📊", label: "Level", value: level },
                       { icon: "🏛️", label: "School", value: school },
                       { icon: "💰", label: "Fee", value: fee || "Contact for details" },
+                      ...(eligibility ? [{ icon: "📋", label: "Eligibility", value: eligibility }] : []),
                     ].filter(h => h.value).map((highlight, i) => (
                       <div key={i} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-iftm-border">
                         <span className="text-2xl">{highlight.icon}</span>
@@ -163,7 +236,8 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                   </div>
                 </div>
 
-                {/* Career Opportunities */}
+                {/* Career Opportunities (hardcoded fallback) */}
+                {!careerProspects && (
                 <div className="mt-10">
                   <h3 className="text-xl font-bold text-iftm-dark mb-4">
                     Career Opportunities After {programme.title}
@@ -189,6 +263,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                     ))}
                   </div>
                 </div>
+                )}
 
                 {/* FAQs */}
                 <div className="mt-10">
@@ -196,7 +271,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                   <div className="space-y-3">
                     {[
                       { q: `What is the duration of ${programme.title}?`, a: duration ? `The programme duration is ${duration}.` : "Please contact the admission office for details." },
-                      { q: "What are the eligibility criteria?", a: "Candidates must meet the minimum academic requirements as per UGC/university norms. Contact admissions for specific criteria." },
+                      { q: "What are the eligibility criteria?", a: eligibility || "Candidates must meet the minimum academic requirements as per UGC/university norms. Contact admissions for specific criteria." },
                       { q: "Is scholarship available?", a: "Yes, IFTM University offers merit-based and need-based scholarships. Visit the scholarship page for details." },
                       { q: "How to apply?", a: "You can apply online through the university admission portal or visit the campus directly." },
                     ].map((faq, i) => (
@@ -245,6 +320,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
                         { label: "Duration", value: duration },
                         { label: "Level", value: level },
                         { label: "Fee", value: fee },
+                        ...(eligibility ? [{ label: "Eligibility", value: eligibility }] : []),
                       ].filter(item => item.value).map((item, i) => (
                         <div key={i} className="flex justify-between items-center py-2 border-b border-iftm-border last:border-0">
                           <span className="text-iftm-text-light text-sm">{item.label}</span>

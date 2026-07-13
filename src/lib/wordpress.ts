@@ -303,6 +303,14 @@ export async function getProgrammeBySlug(slug: string) {
           duration
           fee
         }
+        programmeFields {
+          eligibility
+          overview
+          curriculum
+          careerProspects
+          fee
+          level
+        }
         featuredImage {
           node {
             ...ImageFields
