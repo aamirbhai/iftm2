@@ -55,6 +55,64 @@ const bannerSlides = [
   { title: "69+ Acres Green Campus", subtitle: "World-class infrastructure with modern facilities", color: "from-amber-700 to-orange-900" },
 ];
 
+/* ─── Lazy Video Hook ─── */
+function useLazyVideo(threshold = 0.1) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px", threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, shouldLoad };
+}
+
+/* ─── Lazy Video Component ─── */
+function LazyHeroVideo() {
+  const { ref, shouldLoad } = useLazyVideo(0.1);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (shouldLoad && videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [shouldLoad]);
+
+  return (
+    <div ref={ref} className="absolute inset-0">
+      {/* Dark gradient fallback while video loads */}
+      <div className="absolute inset-0 bg-gradient-to-br from-iftm-navy via-iftm-dark to-black" />
+
+      {shouldLoad && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+        >
+          <source src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "/videos/hero.mp4"} type="video/mp4" />
+        </video>
+      )}
+    </div>
+  );
+}
+
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
   const [count, setCount] = useState(0);
@@ -121,17 +179,8 @@ export default function HeroSlider() {
           SECTION 1: HERO with HLS Video BG
           ═══════════════════════════════════════════ */}
       <section className="relative h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden bg-iftm-dark">
-        {/* Video Background */}
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero/slide-1.jpg"
-        >
-          <source src="/videos/campus.mp4" type="video/mp4" />
-        </video>
+        {/* Video Background - Lazy Loaded */}
+        <LazyHeroVideo />
 
         {/* Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
