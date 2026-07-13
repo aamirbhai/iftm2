@@ -78,7 +78,7 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-iftm-navy/95 via-iftm-navy/80 to-iftm-navy/40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-iftm-navy via-iftm-navy/90 to-transparent" />
           </div>
 
           <div className="relative max-w-[1400px] mx-auto px-4 md:px-6 py-12 md:py-16">
