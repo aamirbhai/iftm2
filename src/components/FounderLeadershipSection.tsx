@@ -130,7 +130,7 @@ export default function FounderLeadershipSection() {
               University Leadership
             </span>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 text-center lg:text-left">
-              Message from <span className="text-iftm-dark">Leadership</span>
+              Message from <span className="text-iftm-gold">Leadership</span>
             </h2>
 
             {/* Leadership Card */}
