@@ -7,6 +7,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   isTyping?: boolean;
+  showLanguageOptions?: boolean;
 }
 
 function findFAQMatch(query: string): string | null {
@@ -26,7 +27,9 @@ export default function GiniChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [hasGreeted, setHasGreeted] = useState(false);
+  const [step, setStep] = useState<"greet" | "name" | "language" | "chat">("greet");
+  const [userName, setUserName] = useState("");
+  const [language, setLanguage] = useState<"en" | "hi" | "">("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,11 +37,11 @@ export default function GiniChatbot() {
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && !hasGreeted) {
-      setHasGreeted(true);
+    if (isOpen && step === "greet") {
+      setStep("name");
       simulateTyping("Hey! Welcome to IFTM University. I'm Gini, your admission guide. What's your name?");
     }
-  }, [isOpen, hasGreeted]);
+  }, [isOpen, step]);
 
   function simulateTyping(text: string) {
     const typingMsg: Message = { role: "assistant", content: "", isTyping: true };
@@ -54,29 +57,71 @@ export default function GiniChatbot() {
     }, delay);
   }
 
+  function showLanguageSelection() {
+    const langMsg: Message = {
+      role: "assistant",
+      content: language === "hi"
+        ? `${userName}, aap kis language mein baat karna chahenge?`
+        : `${userName}, which language would you prefer to chat in?`,
+      showLanguageOptions: true,
+    };
+    setMessages((prev) => [...prev, langMsg]);
+  }
+
+  function handleLanguageSelect(lang: "en" | "hi") {
+    setLanguage(lang);
+    setStep("chat");
+
+    // Add user's language choice as a message
+    const userMsg: Message = { role: "user", content: lang === "hi" ? "Hindi" : "English" };
+    setMessages((prev) => [...prev, userMsg]);
+
+    // Respond in selected language
+    if (lang === "hi") {
+      simulateTyping(`Bahut accha ${userName}! Ab aap Hindi mein pooch sakte ho. Main aapki kya madad kar sakta hoon?`);
+    } else {
+      simulateTyping(`Great ${userName}! You can now ask me anything in English. How can I help you?`);
+    }
+  }
+
   async function handleSend() {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
 
     const userMessage: Message = { role: "user", content: trimmed };
-    const newMessages = [...messages.filter((m) => !m.isTyping), userMessage];
-    setMessages(newMessages);
+    setMessages((prev) => [...prev.filter((m) => !m.isTyping && !m.showLanguageOptions), userMessage]);
     setInput("");
 
-    // Try client-side FAQ first
+    // Handle name step
+    if (step === "name") {
+      setUserName(trimmed);
+      setStep("language");
+      setTimeout(() => showLanguageSelection(), 500);
+      return;
+    }
+
+    // Handle chat step
     const faqAnswer = findFAQMatch(trimmed);
     if (faqAnswer) {
       simulateTyping(faqAnswer);
       return;
     }
 
-    // Call API for AI response
     setIsLoading(true);
     try {
+      const chatMessages = [
+        ...messages.filter((m) => !m.isTyping && !m.showLanguageOptions).map((m) => ({ role: m.role, content: m.content })),
+        { role: "user", content: trimmed },
+      ];
+
       const response = await fetch("/api/gini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({
+          messages: chatMessages,
+          userName,
+          language,
+        }),
       });
 
       if (response.ok) {
@@ -88,24 +133,33 @@ export default function GiniChatbot() {
       }
     } catch {
       setIsLoading(false);
-      // Fallback: give helpful response based on context
       const lowerInput = trimmed.toLowerCase();
-      let fallback = "I'm having trouble connecting right now. ";
+      let fallback = "";
 
-      if (lowerInput.includes("fee") || lowerInput.includes("cost") || lowerInput.includes("price")) {
-        fallback = "For fee details, please contact our admission office at +91-591-2486021 or visit the specific programme page on our website. Scholarships are available for meritorious students.";
-      } else if (lowerInput.includes("admission") || lowerInput.includes("apply")) {
-        fallback = "You can apply online at our admissions portal. For help, call +91-591-2486021. Admissions are open for 2026-27 session.";
-      } else if (lowerInput.includes("placement") || lowerInput.includes("job")) {
-        fallback = "IFTM has 90%+ placement rate with 500+ recruiters including TCS, Infosys, Amazon, Google. Highest package: 12 LPA.";
-      } else if (lowerInput.includes("course") || lowerInput.includes("programme")) {
-        fallback = "We offer 130+ programmes across 12 schools — Engineering, Pharmacy, Management, Law, Sciences, and more. Which field interests you?";
-      } else if (lowerInput.includes("hostel") || lowerInput.includes("campus")) {
-        fallback = "Our 69+ acre campus has modern hostels (separate for boys/girls), Wi-Fi, library, labs, sports facilities, and 24/7 security.";
-      } else if (lowerInput.includes("contact") || lowerInput.includes("phone")) {
-        fallback = "Phone: +91-591-2486021\nToll Free: 1800-121-066666\nEmail: info@iftmuniversity.ac.in\nAddress: Lodhipur Rajput, Delhi Road, Moradabad, UP";
+      if (language === "hi") {
+        if (lowerInput.includes("fee") || lowerInput.includes("cost") || lowerInput.includes("price")) {
+          fallback = "Fee details ke liye admission office call karo +91-591-2486021. Scholarship bhi milti hai merit basis pe.";
+        } else if (lowerInput.includes("admission") || lowerInput.includes("apply")) {
+          fallback = "Online apply karo hamari website se. Help chahiye toh call karo +91-591-2486021.";
+        } else if (lowerInput.includes("placement") || lowerInput.includes("job")) {
+          fallback = "IFTM ka placement record accha hai. 500+ companies aati hain - TCS, Infosys, Amazon, Google.";
+        } else if (lowerInput.includes("course") || lowerInput.includes("programme")) {
+          fallback = "50+ programmes hain - Engineering, Pharmacy, MBA, Law, sab hai. Kaunsa field interest karta hai?";
+        } else {
+          fallback = "Mujhe abhi connect hone mein problem ho rahi hai. Call karo +91-591-2486021.";
+        }
       } else {
-        fallback += "For immediate help, call us at +91-591-2486021 or email info@iftmuniversity.ac.in. Our team will assist you.";
+        if (lowerInput.includes("fee") || lowerInput.includes("cost") || lowerInput.includes("price")) {
+          fallback = "For fee details, please contact our admission office at +91-591-2486021. Scholarships are available for meritorious students.";
+        } else if (lowerInput.includes("admission") || lowerInput.includes("apply")) {
+          fallback = "You can apply online at our admissions portal. For help, call +91-591-2486021.";
+        } else if (lowerInput.includes("placement") || lowerInput.includes("job")) {
+          fallback = "IFTM has 90%+ placement rate with 500+ recruiters including TCS, Infosys, Amazon, Google.";
+        } else if (lowerInput.includes("course") || lowerInput.includes("programme")) {
+          fallback = "We offer 50+ programmes across 12 schools. Which field interests you?";
+        } else {
+          fallback = "I'm having trouble connecting right now. Please call +91-591-2486021 for assistance.";
+        }
       }
 
       simulateTyping(fallback);
@@ -161,6 +215,24 @@ export default function GiniChatbot() {
                       <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                       <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                     </span>
+                  ) : msg.showLanguageOptions ? (
+                    <div>
+                      <p className="mb-3">{msg.content}</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleLanguageSelect("en")}
+                          className="px-4 py-2 bg-iftm-navy text-white rounded-lg text-sm font-medium hover:bg-iftm-navy-light transition-colors"
+                        >
+                          English
+                        </button>
+                        <button
+                          onClick={() => handleLanguageSelect("hi")}
+                          className="px-4 py-2 bg-iftm-primary text-white rounded-lg text-sm font-medium hover:bg-red-800 transition-colors"
+                        >
+                          Hindi
+                        </button>
+                      </div>
+                    </div>
                   ) : (
                     msg.content
                   )}
@@ -195,13 +267,13 @@ export default function GiniChatbot() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={step === "name" ? "Enter your name..." : language === "hi" ? "Apna sawaal likhein..." : "Type your message..."}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-iftm-navy"
-                disabled={isLoading}
+                disabled={isLoading || step === "language"}
               />
               <button
                 type="submit"
-                disabled={isLoading || !input.trim()}
+                disabled={isLoading || !input.trim() || step === "language"}
                 className="px-4 py-2 bg-iftm-navy text-white rounded-lg text-sm font-medium hover:bg-iftm-navy-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Send
