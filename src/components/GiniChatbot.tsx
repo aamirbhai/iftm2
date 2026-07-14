@@ -5,30 +5,52 @@ import { useState, useRef, useEffect } from "react";
 interface Message {
   role: "user" | "assistant";
   content: string;
+  isTyping?: boolean;
 }
 
 export default function GiniChatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hello! I'm Gini, your IFTM assistant. How can I help you today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasGreeted, setHasGreeted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Greet when chat opens for the first time
+  useEffect(() => {
+    if (isOpen && !hasGreeted) {
+      setHasGreeted(true);
+      simulateTyping("Hey! Welcome to IFTM University. I'm Gini, your admission guide. What's your name?");
+    }
+  }, [isOpen, hasGreeted]);
+
+  function simulateTyping(text: string) {
+    const typingMsg: Message = { role: "assistant", content: "", isTyping: true };
+    setMessages((prev) => [...prev, typingMsg]);
+
+    // Simulate typing delay based on message length
+    const delay = Math.min(800 + text.length * 15, 2500);
+
+    setTimeout(() => {
+      setMessages((prev) => {
+        const updated = [...prev];
+        const lastIdx = updated.length - 1;
+        updated[lastIdx] = { role: "assistant", content: text, isTyping: false };
+        return updated;
+      });
+    }, delay);
+  }
+
   async function handleSend() {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
 
     const userMessage: Message = { role: "user", content: trimmed };
-    const newMessages = [...messages, userMessage];
+    const newMessages = [...messages.filter((m) => !m.isTyping), userMessage];
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
@@ -41,17 +63,11 @@ export default function GiniChatbot() {
       });
 
       const data = await response.json();
-      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
-    } catch {
-      setMessages([
-        ...newMessages,
-        {
-          role: "assistant",
-          content: "Sorry, I couldn't process that. Please try again or call +91-591-2486021.",
-        },
-      ]);
-    } finally {
       setIsLoading(false);
+      simulateTyping(data.reply);
+    } catch {
+      setIsLoading(false);
+      simulateTyping("Something went wrong. Try again or call us at +91-591-2486021.");
     }
   }
 
@@ -84,7 +100,7 @@ export default function GiniChatbot() {
             </div>
             <div>
               <h3 className="font-bold text-sm">Gini</h3>
-              <p className="text-xs text-white/70">IFTM University Assistant</p>
+              <p className="text-xs text-white/70">IFTM Admission Guide</p>
             </div>
           </div>
 
@@ -102,15 +118,27 @@ export default function GiniChatbot() {
                       : "bg-gray-100 text-gray-800 rounded-bl-none"
                   }`}
                 >
-                  {msg.content}
+                  {msg.isTyping ? (
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </span>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}
 
-            {isLoading && (
+            {isLoading && !messages.some((m) => m.isTyping) && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 px-3 py-2 rounded-xl rounded-bl-none text-sm text-gray-500">
-                  <span className="animate-pulse">Typing...</span>
+                <div className="bg-gray-100 px-3 py-2 rounded-xl rounded-bl-none text-sm">
+                  <span className="flex items-center gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </span>
                 </div>
               </div>
             )}
@@ -131,7 +159,7 @@ export default function GiniChatbot() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask me anything..."
+                placeholder="Type your message..."
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-iftm-navy"
                 disabled={isLoading}
               />
