@@ -14,7 +14,6 @@ const stats = [
 /* ─── Banner Slides ─── */
 const bannerSlides = [
   { title: "Admissions Open 2025-26", subtitle: "Apply now for UG, PG & Diploma programmes", color: "from-iftm-primary to-red-900" },
-  { title: "NAAC 'A' Grade Accredited", subtitle: "Recognized for academic excellence and infrastructure", color: "from-iftm-navy to-blue-900" },
   { title: "90%+ Placement Record", subtitle: "Top recruiters: Google, Microsoft, Amazon, TCS & more", color: "from-green-800 to-emerald-900" },
   { title: "69+ Acres Green Campus", subtitle: "World-class infrastructure with modern facilities", color: "from-amber-700 to-orange-900" },
 ];
@@ -219,13 +218,6 @@ export default function HeroSlider() {
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="max-w-[1400px] mx-auto px-4 md:px-6 w-full text-center">
             <div className="max-w-[900px] mx-auto animate-fade-in">
-                {/* NAAC Badge - Small green bg with yellow text */}
-                <div className="inline-block mb-6">
-                  <span className="bg-green-600/90 backdrop-blur-sm text-iftm-gold text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-green-500/40">
-                    NAAC &apos;A&apos; Grade
-                  </span>
-                </div>
-
                 {/* University Name - Attractive styling */}
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.15] mb-6">
                   <span className="block text-white/90 font-light text-xl md:text-2xl lg:text-3xl tracking-[0.15em] uppercase mb-2" style={{ fontFamily: "var(--font-heading)" }}>
